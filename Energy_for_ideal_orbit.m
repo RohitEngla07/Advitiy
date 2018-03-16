@@ -1,6 +1,10 @@
 %To simulate energy generated in ideal attitude for some orbits
 %RUN contants v15 pow and Si_120k,light_120k,SGP_120k before running this
 %code
+%make Si120_k vectors as 100
+load('light_120k');
+load('Si_120k');
+load('SGP_120k');
 %for conviniece area and normal vectors are redefined
 v_S=[v_S1',v_S2',v_S3',v_S4',v_S5',v_S6'];
 Area=[Area_SP_S1,Area_SP_S2,Area_SP_S3,Area_SP_S4,Area_SP_S5,Area_SP_S6];
@@ -9,31 +13,49 @@ interval=0.1; %time in seconds
 Energy=0.00; %variable to store Energy
 %P=zeros(1,size(SGP_120k,2));
 %totalpower=zeros(6,54000);
-totalpower=zeros(54000, 6);
+totalpower=zeros(1, 6);
 Energyplot=zeros(1,54000);
+r_angle_v=zeros(1,54000);
 %for i=1:size(SGP_120k,2)
+sun_orbitframe = zeros(4,54000);
+Power_side=zeros(54000,6);
+SIFake_120k=zeros(4,70001);
 for i=1:54000
     r=SGP_120k(2:4,i);
     v=SGP_120k(5:7,i);
-    normr=r/norm(r);
-    normv=v/norm(v);
-    z=-normr;
-    y=cross(normv,normr);
+    unitr=r/norm(r);
+    unitv=v/norm(v);
+    r_angle_v(i)= dot(unitr, unitv);
+    z=-unitr;
+    y=cross(unitv,unitr);
+    ang_mom(1:3,i)= -y;
+    sun_angle(i) = dot(ang_mom(:,i),Si_120k(2:4,i));
+    sgp_norm(i)=norm(SGP_120k(2:4,i));
     y=y/norm(y);
     x=cross(y,z);
     DCM_IO=[x,y,z]'; %Rotation matrix to convert inertial frame vector to orbit frame vector
     sunvector_I=Si_120k(2:4,i);
+    sun_orbitframe(2:4,i)=DCM_IO*sunvector_I;
     sunvector_O=DCM_IO*sunvector_I;
     for side=1:6
         cosangle(side)=dot(sunvector_O,v_S(:,side));
-        if (cosangle(side)<0)
+          if (side == 4)
+            sunside_vector(i)=dot(sunvector_O,v_S(:,side));
+          elseif (side == 3)
+            antisunside_vector(i)=dot(sunvector_O,v_S(:,side));  
+%             %cosangle(side)=1;        
+          elseif (cosangle(side)<0)
             cosangle(side)=0;
+        else    
         end
-        P(i,side)=efficiany_solar_cell*Solar_Constant*cosangle(side)*Area(side)*light_120k(2,i);
-        Energy=Energy+(P(i,side)*interval);
+        Power_side(i,side)=efficiany_solar_cell*Area(side)*Solar_Constant*cosangle(side)*light_120k(2,i);
+        Intensity(i,side) = Solar_Constant*cosangle(side)*light_120k(2,i);
+        Energy=Energy+(Power_side(i,side)*interval);
         Energyplot(i)=Energy;
-        totalpower(i, side)=totalpower(i, side)+P(i,side);
     end 
     
 end
-Energy
+plot(Intensity) ;
+legend('leading', 'lagging', 'antisun', 'sunside', 'nadir', 'zenith');
+Energy;
+fprintf('Energy_for_ideal_orbit done \n')

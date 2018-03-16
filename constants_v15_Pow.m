@@ -39,8 +39,8 @@ Ts_display = 6;     % sample time for data logging
 %%ext = 'jpg';
 
 %% TIME
-today = datenum('18-Oct-2015 10:30:0'); % ** SGP, IGRF data have been created for this date **
-equinox = datenum('20-Mar-2015 12:0:0'); % date of equinox
+today = datenum('27-Sep-2016 16:14:0'); % ** SGP, IGRF data have been created for this date **
+equinox = datenum('20-Mar-2016 21:45:0'); % date of equinox
 
 %% SGP (Orbit parameters / ICs)
 R_e = 6378164 + 700000;    % Earth radius + Height of sat
@@ -160,14 +160,14 @@ s_MAGMETER_WEIGHT = .9;
 Solar_Constant = 1353; %W/m^2
 internal_resistance = 0.08; %ohms
 
-Area_SP_S1 = 0.0572;%4*11*0.02025*0.04025; % Areas on side S1, in m^2 %leading
-Area_SP_S2 = 0.0572;%4*11*0.02025*0.04025; % Areas on side S2, in m^2 %lagging
-Area_SP_S3 = 0.0; % Areas on side S3, in m^2 %antisunside
-Area_SP_S4 = 0.0572;%4*11*0.02025*0.04025; % Areas on side S4, in m^2 %sunside
+Area_SP_S1 = 0.0144;%4*11*0.02025*0.04025; % Areas on side S1, in m^2 %leading
+Area_SP_S2 = 0.0144;%4*11*0.02025*0.04025; % Areas on side S2, in m^2 %lagging
+Area_SP_S3 = 0.0144; % Areas on side S3, in m^2 %antisunside
+Area_SP_S4 = 0.0144;%4*11*0.02025*0.04025; % Areas on side S4, in m^2 %sunside
 Area_SP_S5 = 0.0; % Areas on side S5, in m^2 %nadir
-Area_SP_S6 = 0.0363;%3*11*0.02025*0.04025; % Areas on side S6, in m^2 %zenith
+Area_SP_S6 = 0.0064;%3*11*0.02025*0.04025; % Areas on side S6, in m^2 %zenith
 
-efficiany_solar_cell = 0.16; % percentage
+efficiany_solar_cell = 0.27; % percentage
 eclipse_time = T_ORBIT*0.4;  % approximated value, we don't need correct one.
 %%
 fprintf('Constants done \n')
